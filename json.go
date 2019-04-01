@@ -61,11 +61,7 @@ func parseDynamic(v reflect.Value, dynFielder DynamicFielder, dynFieldName strin
 			return nil
 		}
 
-		dynFielder, ok := v.Addr().Interface().(DynamicFielder)
-		if !ok {
-			return nil
-		}
-
+		dynFielder, _ = v.Addr().Interface().(DynamicFielder)
 		typ := v.Type()
 		for i := 0; i < v.NumField(); i++ {
 			sf := typ.Field(i)
