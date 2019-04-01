@@ -1,13 +1,13 @@
 Parse json with dynamic field
 
 ```go
-package dynamicjson_test
+package dynamic_test
 
 import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/k81/dynamicjson"
+	"github.com/k81/dynamic"
 )
 
 type aContent struct {
@@ -19,11 +19,12 @@ type bContent struct {
 }
 
 type jsonValue struct {
-	dynamicjson.DynamicJSON
+	Type    string        `json:"type"`
+	Content *dynamic.Type `json:"content,omitempty"`
 }
 
-func (jc *jsonValue) NewDynamicContent(typ string) interface{} {
-	switch typ {
+func (jc *jsonValue) NewDynamicField(fieldName string) interface{} {
+	switch jc.Type {
 	case "a":
 		return &aContent{}
 	case "b":
@@ -33,15 +34,17 @@ func (jc *jsonValue) NewDynamicContent(typ string) interface{} {
 }
 
 func ExampleMarshalA() {
-	obj := &jsonValue{}
-	obj.SetType("a")
-	obj.SetContent(&aContent{16})
+	obj := &jsonValue{
+		Type:    "a",
+		Content: dynamic.New(&aContent{16}),
+	}
 	data, _ := json.Marshal(obj)
 	fmt.Println(string(data))
 
-	obj = &jsonValue{}
-	obj.SetType("b")
-	obj.SetContent(&bContent{Values: []int{1, 2, 3}})
+	obj = &jsonValue{
+		Type:    "b",
+		Content: dynamic.New(&bContent{Values: []int{1, 2, 3}}),
+	}
 	data, _ = json.Marshal(obj)
 	fmt.Println(string(data))
 	// Output:
@@ -52,9 +55,9 @@ func ExampleMarshalA() {
 func ExampleUnmarshal() {
 	input := []byte(`{"type":"b","content":{"items":[1,2,3]}}`)
 	obj := &jsonValue{}
-	_ = dynamicjson.Parse(input, obj)
-	content, ok := obj.GetContent().(*bContent)
-	fmt.Println(obj.GetType())
+	_ = dynamic.Parse(input, obj)
+	content, ok := obj.Content.Value.(*bContent)
+	fmt.Println(obj.Type)
 	fmt.Println(ok)
 	fmt.Println(content.Values)
 	// Output:
