@@ -26,6 +26,13 @@ func New(v interface{}) *Type {
 	return &Type{Value: v}
 }
 
+func GetValue(t *Type) interface{} {
+	if t != nil {
+		return t.Value
+	}
+	return nil
+}
+
 func (t *Type) UnmarshalJSON(data []byte) error {
 	t.raw = data
 	return nil
