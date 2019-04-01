@@ -13,8 +13,8 @@ type DynamicFielder interface {
 
 var DynamicType = reflect.TypeOf(&Type{})
 
-func IsDynamic(v interface{}) bool {
-	return reflect.TypeOf(v) == DynamicType
+func IsDynamic(typ reflect.Type) bool {
+	return typ == DynamicType
 }
 
 type Type struct {
