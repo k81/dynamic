@@ -34,3 +34,7 @@ func (t *Type) UnmarshalJSON(data []byte) error {
 func (t *Type) MarshalJSON() ([]byte, error) {
 	return json.Marshal(t.Value)
 }
+
+func (t *Type) GetRawMessage() json.RawMessage {
+	return t.raw
+}

@@ -39,7 +39,9 @@ func parseDynamic(v reflect.Value, dynFielder DynamicFielder, dynFieldName strin
 				}
 			}
 		}
-		v.Set(reflect.Zero(v.Type()))
+		if v.CanSet() {
+			v.Set(reflect.Zero(v.Type()))
+		}
 		return nil
 	case reflect.Slice, reflect.Array:
 		for i := 0; i < v.Len(); i++ {
