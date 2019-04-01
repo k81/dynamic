@@ -45,3 +45,27 @@ func TestNilMarshal(t *testing.T) {
 	require.NoError(t, err)
 	require.NotContains(t, string(output), "content")
 }
+
+func TestNestedDynamicJSON(t *testing.T) {
+	obj := &jsonValue{
+		Type: "nested",
+		Content: dynamic.New(&nestedContent{
+			SubType: "subTypeA",
+			Data:    dynamic.New(&subTypeA{Name: "kate"}),
+		}),
+	}
+	result, err := json.Marshal(obj)
+	require.NoError(t, err)
+
+	objParsed := &jsonValue{}
+	err = dynamic.Parse(result, objParsed)
+	require.NoError(t, err)
+	require.Equal(t, obj.Type, objParsed.Type)
+
+	content, ok := objParsed.Content.Value.(*nestedContent)
+	require.True(t, ok)
+	require.Equal(t, "subTypeA", content.SubType)
+	nestedValue, ok := content.Data.Value.(*subTypeA)
+	require.True(t, ok)
+	require.Equal(t, "kate", nestedValue.Name)
+}

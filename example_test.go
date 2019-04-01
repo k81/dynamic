@@ -15,6 +15,29 @@ type bContent struct {
 	Values []int `json:"items"`
 }
 
+type subTypeA struct {
+	Name string `json:"name"`
+}
+
+type subTypeB struct {
+	Age int `json:"age"`
+}
+
+type nestedContent struct {
+	SubType string        `json:"sub_type"`
+	Data    *dynamic.Type `json:"value,omitempty"`
+}
+
+func (c *nestedContent) NewDynamicField(fieldName string) interface{} {
+	switch c.SubType {
+	case "subTypeA":
+		return &subTypeA{}
+	case "subTypeB":
+		return &subTypeB{}
+	}
+	return nil
+}
+
 type jsonValue struct {
 	Type    string        `json:"type"`
 	Content *dynamic.Type `json:"content,omitempty"`
@@ -26,6 +49,8 @@ func (jc *jsonValue) NewDynamicField(fieldName string) interface{} {
 		return &aContent{}
 	case "b":
 		return &bContent{}
+	case "nested":
+		return &nestedContent{}
 	}
 	return nil
 }
