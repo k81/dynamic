@@ -13,6 +13,10 @@ type DynamicFielder interface {
 
 var DynamicType = reflect.TypeOf(&Type{})
 
+func IsDynamic(v interface{}) bool {
+	return reflect.TypeOf(v) == DynamicType
+}
+
 type Type struct {
 	Value interface{}     `json:"-"`
 	raw   json.RawMessage `json:"-"`
