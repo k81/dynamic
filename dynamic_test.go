@@ -17,7 +17,7 @@ func TestJSON(t *testing.T) {
 	require.NoError(t, err)
 
 	aObjParsed := &jsonValue{}
-	err = dynamic.Parse(aContent, aObjParsed)
+	err = dynamic.ParseJSON(aContent, aObjParsed)
 	require.NoError(t, err)
 	require.Equal(t, aObj.Type, aObjParsed.Type)
 	require.Equal(t, aObj.Content.Value, aObjParsed.Content.Value)
@@ -30,7 +30,7 @@ func TestJSON(t *testing.T) {
 	require.NoError(t, err)
 
 	bObjParsed := &jsonValue{}
-	err = dynamic.Parse(bContent, bObjParsed)
+	err = dynamic.ParseJSON(bContent, bObjParsed)
 	require.NoError(t, err)
 	require.Equal(t, bObj.Type, bObjParsed.Type)
 	require.Equal(t, bObj.Content.Value, bObjParsed.Content.Value)
@@ -39,7 +39,7 @@ func TestJSON(t *testing.T) {
 func TestNilMarshal(t *testing.T) {
 	obj := &jsonValue{}
 	input := []byte(`{"type": "c", "content": {"hello":"hello"}}`)
-	err := dynamic.Parse(input, obj)
+	err := dynamic.ParseJSON(input, obj)
 	require.NoError(t, err)
 	output, err := json.Marshal(obj)
 	require.NoError(t, err)
@@ -58,7 +58,7 @@ func TestNestedDynamicJSON(t *testing.T) {
 	require.NoError(t, err)
 
 	objParsed := &jsonValue{}
-	err = dynamic.Parse(result, objParsed)
+	err = dynamic.ParseJSON(result, objParsed)
 	require.NoError(t, err)
 	require.Equal(t, obj.Type, objParsed.Type)
 

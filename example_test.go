@@ -77,7 +77,7 @@ func ExampleMarshalA() {
 func ExampleUnmarshal() {
 	input := []byte(`{"type":"b","content":{"items":[1,2,3]}}`)
 	obj := &jsonValue{}
-	_ = dynamic.Parse(input, obj)
+	_ = dynamic.ParseJSON(input, obj)
 	content, ok := obj.Content.Value.(*bContent)
 	fmt.Println(obj.Type)
 	fmt.Println(ok)

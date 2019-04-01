@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func Parse(data []byte, ptr interface{}) (err error) {
+func ParseJSON(data []byte, ptr interface{}) (err error) {
 	if err = json.Unmarshal(data, ptr); err != nil {
 		return err
 	}
@@ -31,7 +31,7 @@ func parseDynamic(v reflect.Value, dynFielder DynamicFielder, dynFieldName strin
 			if dynFielder != nil {
 				ptr := dynFielder.NewDynamicField(dynFieldName)
 				if ptr != nil {
-					if err = Parse(dynValue.raw, ptr); err != nil {
+					if err = ParseJSON(dynValue.raw, ptr); err != nil {
 						return err
 					}
 					dynValue.Value = ptr
