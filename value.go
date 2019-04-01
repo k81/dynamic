@@ -5,11 +5,15 @@ import (
 	"reflect"
 )
 
-var DynamicType = reflect.TypeOf(Type{})
+var DynamicType = reflect.TypeOf(&Type{})
 
 type Type struct {
-	Value interface{}
-	raw   json.RawMessage
+	Value interface{}     `json:"-"`
+	raw   json.RawMessage `json:"-"`
+}
+
+func New(v interface{}) *Type {
+	return &Type{Value: v}
 }
 
 func (t *Type) UnmarshalJSON(data []byte) error {
@@ -19,8 +23,4 @@ func (t *Type) UnmarshalJSON(data []byte) error {
 
 func (t *Type) MarshalJSON() ([]byte, error) {
 	return json.Marshal(t.Value)
-}
-
-func (t *Type) Unmarshal(v interface{}) error {
-	return json.Unmarshal(t.raw, v)
 }

@@ -14,11 +14,33 @@ func Parse(data []byte, ptr interface{}) (err error) {
 
 func parseDynamic(v reflect.Value, dynFielder DynamicFielder, dynFieldName string) (err error) {
 	switch v.Kind() {
-	case reflect.Interface, reflect.Ptr:
+	case reflect.Interface:
 		if v.IsNil() {
 			return nil
 		}
 		return parseDynamic(v.Elem(), dynFielder, dynFieldName)
+	case reflect.Ptr:
+		if v.IsNil() {
+			return nil
+		}
+		if v.Type() != DynamicType {
+			return parseDynamic(v.Elem(), dynFielder, dynFieldName)
+		}
+		dynValue := v.Interface().(*Type)
+		if len(dynValue.raw) > 0 {
+			if dynFielder != nil {
+				ptr := dynFielder.NewDynamicField(dynFieldName)
+				if ptr != nil {
+					if err = Parse(dynValue.raw, ptr); err != nil {
+						return err
+					}
+					dynValue.Value = ptr
+					return nil
+				}
+			}
+		}
+		v.Set(reflect.Zero(v.Type()))
+		return nil
 	case reflect.Slice, reflect.Array:
 		for i := 0; i < v.Len(); i++ {
 			if err = parseDynamic(v.Index(i), dynFielder, dynFieldName); err != nil {
@@ -33,20 +55,8 @@ func parseDynamic(v reflect.Value, dynFielder DynamicFielder, dynFieldName strin
 			}
 		}
 	case reflect.Struct:
-		if v.CanAddr() {
+		if !v.CanAddr() {
 			return nil
-		}
-
-		if dynFielder != nil && v.Type() == DynamicType {
-			ptr := dynFielder.NewDynamicField(dynFieldName)
-			if ptr != nil {
-				dynValue := v.Addr().Interface().(*Type)
-				if err = dynValue.Unmarshal(ptr); err != nil {
-					return err
-				}
-				dynValue.Value = ptr
-				return nil
-			}
 		}
 
 		dynFielder, ok := v.Addr().Interface().(DynamicFielder)

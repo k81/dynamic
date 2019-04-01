@@ -11,7 +11,7 @@ import (
 func TestJSON(t *testing.T) {
 	aObj := &jsonValue{
 		Type:    "a",
-		Content: dynamic.Type{Value: &aContent{16}},
+		Content: dynamic.New(&aContent{16}),
 	}
 	aContent, err := json.Marshal(aObj)
 	require.NoError(t, err)
@@ -24,7 +24,7 @@ func TestJSON(t *testing.T) {
 
 	bObj := &jsonValue{
 		Type:    "b",
-		Content: dynamic.Type{Value: &bContent{Values: []int{1, 2, 3}}},
+		Content: dynamic.New(&bContent{Values: []int{1, 2, 3}}),
 	}
 	bContent, err := json.Marshal(bObj)
 	require.NoError(t, err)

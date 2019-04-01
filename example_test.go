@@ -16,8 +16,8 @@ type bContent struct {
 }
 
 type jsonValue struct {
-	Type    string       `json:"type"`
-	Content dynamic.Type `json:"content"`
+	Type    string        `json:"type"`
+	Content *dynamic.Type `json:"content,omitempty"`
 }
 
 func (jc *jsonValue) NewDynamicField(fieldName string) interface{} {
@@ -33,14 +33,14 @@ func (jc *jsonValue) NewDynamicField(fieldName string) interface{} {
 func ExampleMarshalA() {
 	obj := &jsonValue{
 		Type:    "a",
-		Content: dynamic.Type{Value: &aContent{16}},
+		Content: dynamic.New(&aContent{16}),
 	}
 	data, _ := json.Marshal(obj)
 	fmt.Println(string(data))
 
 	obj = &jsonValue{
 		Type:    "b",
-		Content: dynamic.Type{Value: &bContent{Values: []int{1, 2, 3}}},
+		Content: dynamic.New(&bContent{Values: []int{1, 2, 3}}),
 	}
 	data, _ = json.Marshal(obj)
 	fmt.Println(string(data))
