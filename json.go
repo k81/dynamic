@@ -5,6 +5,7 @@ import (
 	"reflect"
 )
 
+// ParseJSON with dynamic field support
 func ParseJSON(data []byte, ptr interface{}) (err error) {
 	if err = json.Unmarshal(data, ptr); err != nil {
 		return err
