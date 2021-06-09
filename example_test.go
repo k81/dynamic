@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/k81/dynamic"
+	"github.com/std0d9k81/dynamic"
 )
 
 type aContent struct {
